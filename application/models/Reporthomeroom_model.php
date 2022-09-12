@@ -91,10 +91,11 @@ class Reporthomeroom_model extends CI_Model
         return $data;
     }
 
+
     public function data()
     {
-        $this->load->library('tothai');
 
+        $this->load->library('tothai');
         $user_id = $this->session->user_id;
         $select = $this->input->post('week');
         foreach ($select as $value) {
@@ -109,6 +110,7 @@ class Reporthomeroom_model extends CI_Model
 
         $qr_week = $this->db->query("SELECT * FROM `homerooms` WHERE `status` = 1 AND `id` IN (SELECT `homeroom_actions`.`homeroom_id` FROM `homeroom_actions` WHERE `homeroom_actions`.`homeroom_id` IN ($week_r) AND `homeroom_actions`.`user_id` = $user_id AND `homeroom_actions`.`action_status` = 'confirmed')");
         $data['week'] = $qr_week->result();
+
         foreach ($data['week'] as $week) {
 
 
@@ -135,7 +137,6 @@ class Reporthomeroom_model extends CI_Model
                 $dateth['y'] = $this->tothai->toThaiDateTime($date[0]->created_at, '%y');
                 $group->thaidate = $dateth;
 
-
                 $qr_ck_std = $this->db->query("SELECT * FROM `homeroom_activity_items` WHERE `group_id` IN (" . $group->group_id . ") AND `homeroom_id`= $week->id");
                 $ck_std = $qr_ck_std->result();
                 $group->std_all = 0;
@@ -161,8 +162,8 @@ ORDER BY `advisors_groups`.`advisor_type` ASC");
                 $advisor_num = 1;
                 foreach ($group->re_advisor as $advisor) {
                     $group->advisor_name .= '
-                        <div>' . $this->tothai->thainum($advisor_num++) . '. ' . $advisor->firstname . ' ' . $advisor->lastname . '</div>
-                        ';
+    <div>' . $this->tothai->thainum($advisor_num++) . '. ' . $advisor->firstname . ' ' . $advisor->lastname . '</div>
+    ';
                     $advisor->signature = $this->profile_lib->getUserData($advisor->user_id, 'signature');
                 }
 
@@ -172,8 +173,6 @@ ORDER BY `advisors_groups`.`advisor_type` ASC");
 
                 $qr_obediences_img = $this->db->query("SELECT * FROM `homeroom_obedience_attachments` WHERE `group_id` = $group->group_id AND `homeroom_id` = $week->id AND `status` = 1");
                 $group->obediences_img = $qr_obediences_img->result();
-
-
 
                 $qr_risk = $this->db->query("SELECT * FROM `homeroom_risk_items`
 INNER JOIN `users_student`
@@ -206,7 +205,6 @@ AND `homeroom_risk_items`.`group_id` IN (" . $group->group_id . ") AND `homeroom
                 $group->executive->signature = $this->profile_lib->getUserData($group->executive->user_id, 'signature');
             }
         }
-
 
         return $data;
     }
